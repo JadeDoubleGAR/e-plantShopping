@@ -8,54 +8,54 @@ const CartItem = ({ onContinueShopping }) => {
   const dispatch = useDispatch();
 
   // Calculate total amount for all products in the cart
-// Calculate total amount for all products in the cart
-const calculateTotalAmount = () => {
-  return cart.reduce((total, item) => {
-    const price = parseFloat(item.cost.toString().replace('$', ''));
-    return total + price * item.quantity;
-  }, 0);
-};
+  const calculateTotalAmount = () => {
+    let total = 0;
+  
+    cart.forEach((item) => {
+      const quantity = item.quantity;
+      const cost = parseFloat(item.cost.substring(1));
+  
+      total += cost * quantity;
+    });
+  
+    return total;
+  };
 
-// Continue shopping
-const handleContinueShopping = (e) => {
-  onContinueShopping(e);
-};
+  const handleContinueShopping = (e) => {
+    onContinueShopping(e);
+  };
 
-// Checkout (placeholder)
-const handleCheckoutShopping = (e) => {
-  alert('Functionality to be added for future reference');
-};
+  const handleIncrement = (item) => {
+    dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
+  };
 
-// Increment quantity
-const handleIncrement = (item) => {
-  dispatch(updateQuantity({
-    name: item.name,
-    quantity: item.quantity + 1
-  }));
-};
+  const handleDecrement = (item) => {
+    if (item.quantity > 1) {
+      dispatch(
+        updateQuantity({
+          name: item.name,
+          quantity: item.quantity - 1
+        })
+      );
+    } else {
+      dispatch(removeItem(item.name));
+    }
+  };
 
-// Decrement quantity
-const handleDecrement = (item) => {
-  if (item.quantity > 1) {
-    dispatch(updateQuantity({
-      name: item.name,
-      quantity: item.quantity - 1
-    }));
-  } else {
+  const handleRemove = (item) => {
     dispatch(removeItem(item.name));
-  }
-};
+  };
 
-// Remove item
-const handleRemove = (item) => {
-  dispatch(removeItem(item.name));
-};
+  const handleCheckoutShopping = (e) => {
+    alert('Functionality to be added for future reference');
+  };
+  
 
-// Calculate total cost for one item
-const calculateTotalCost = (item) => {
-  const price = parseFloat(item.cost.toString().replace('$', ''));
-  return price * item.quantity;
-};
+  // Calculate total cost based on quantity for an item
+  const calculateTotalCost = (item) => {
+    const cost = parseFloat(item.cost.substring(1));
+    return cost * item.quantity;
+  };
 
   return (
     <div className="cart-container">
@@ -89,5 +89,4 @@ const calculateTotalCost = (item) => {
 };
 
 export default CartItem;
-
 
